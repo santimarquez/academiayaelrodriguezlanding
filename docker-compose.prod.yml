@@ -6,7 +6,6 @@
 
 services:
   web:
-    ports: []  # no host port; Traefik routes by Host
     build:
       args:
         SITE_URL: ${SITE_URL:-https://academiayaelrodriguez.com}

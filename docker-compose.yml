@@ -13,8 +13,8 @@ services:
         SITE_URL: ${SITE_URL:-https://academiayaelrodriguez.com}
     image: academiayaelrodriguez-landing
     restart: unless-stopped
-    ports:
-      - "${PORT:-8080}:80"
+    # No ports: Traefik routes via inverseproxy_shared. For local dev, use:
+    #   docker compose run -p 8080:80 web
     networks:
       - default
       - inverseproxy_shared
