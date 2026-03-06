@@ -1,0 +1,10 @@
+services:
+  landing:
+    container_name: academia-yael-rodriguez-landing
+    build: .
+    ports:
+      - "8080:80"
+    env_file:
+      - .env
+    networks:
+      - default

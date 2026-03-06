@@ -1,0 +1,27 @@
+---
+interface Props {
+  variant?: "portrait" | "educational" | "course-hero" | "course-card" | "banner" | "salon";
+  alt: string;
+  class?: string;
+  aspect?: string;
+}
+
+const { variant = "portrait", alt, class: className = "", aspect = "aspect-[4/5]" } = Astro.props;
+
+const variantClasses: Record<string, string> = {
+  portrait: "bg-academy-pink/80",
+  educational: "bg-[#D2EFE7]",
+  "course-hero": "bg-academy-dark",
+  "course-card": "bg-academy-pink/60",
+  banner: "bg-academy-dark/80",
+  salon: "bg-academy-dark",
+};
+const bgClass = variantClasses[variant] || "bg-academy-pink/80";
+const aspectClass = aspect && aspect !== "aspect-auto" ? aspect : "";
+---
+
+<div
+  role="img"
+  aria-label={alt}
+  class={`${bgClass} ${aspectClass} ${variant === "portrait" && !className.includes("max-w") ? "max-w-lg" : ""} ${className}`.trim()}
+></div>

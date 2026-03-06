@@ -1,0 +1,226 @@
+---
+---
+
+<section id="contacto" class="bg-academy-dark py-20 border-t border-white/10" data-purpose="contact-footer">
+  <div class="container mx-auto px-6 text-center">
+    <h2 class="text-modern-sans text-4xl mb-4 text-white">Próxima Convocatoria</h2>
+    <hr class="border-white/20 max-w-4xl mx-auto mb-12" />
+    <p class="text-lg text-modern-sans mb-12 max-w-2xl mx-auto text-white/90">
+      Si quieres recibir información sobre próximas fechas, contenidos y proceso de inscripción, completa el formulario y nos pondremos en contacto contigo.
+    </p>
+    <div class="mb-20 max-w-xl mx-auto" id="contact-form-container">
+      <form id="contact-form" class="space-y-5 text-left" aria-label="Formulario de contacto" data-analytics="contact_form">
+        <div>
+          <label for="contact-name" class="text-modern-sans block text-xs font-semibold uppercase tracking-widest text-white mb-2">Nombre completo</label>
+          <input
+            type="text"
+            id="contact-name"
+            name="name"
+            required
+            autocomplete="name"
+            placeholder="Tu nombre completo"
+            class="text-modern-sans block w-full rounded-[10px] border border-white/30 bg-white/10 px-4 py-3 text-white placeholder:text-white/50 focus:border-white/50 focus:outline-none focus:ring-1 focus:ring-white/30"
+          />
+          <span id="contact-name-error" class="mt-1 hidden text-sm text-red-300" aria-live="polite"></span>
+        </div>
+        <div>
+          <label for="contact-email" class="text-modern-sans block text-xs font-semibold uppercase tracking-widest text-white mb-2">Email</label>
+          <input
+            type="email"
+            id="contact-email"
+            name="email"
+            required
+            autocomplete="email"
+            placeholder="Tu email"
+            class="text-modern-sans block w-full rounded-[10px] border border-white/30 bg-white/10 px-4 py-3 text-white placeholder:text-white/50 focus:border-white/50 focus:outline-none focus:ring-1 focus:ring-white/30"
+          />
+          <span id="contact-email-error" class="mt-1 hidden text-sm text-red-300" aria-live="polite"></span>
+        </div>
+        <div>
+          <label for="contact-phone" class="text-modern-sans block text-xs font-semibold uppercase tracking-widest text-white mb-2">Teléfono</label>
+          <input
+            type="tel"
+            id="contact-phone"
+            name="phone"
+            required
+            autocomplete="tel"
+            placeholder="Tu número de teléfono"
+            class="text-modern-sans block w-full rounded-[10px] border border-white/30 bg-white/10 px-4 py-3 text-white placeholder:text-white/50 focus:border-white/50 focus:outline-none focus:ring-1 focus:ring-white/30"
+          />
+          <span id="contact-phone-error" class="mt-1 hidden text-sm text-red-300" aria-live="polite"></span>
+        </div>
+        <button
+          type="submit"
+          id="contact-submit-btn"
+          class="btn-outline border-white text-white text-xs w-full sm:w-auto hover:bg-white hover:text-academy-dark"
+        >
+          <span class="contact-btn-text">Solicitar información</span>
+          <span class="contact-btn-spinner hidden" aria-hidden="true">Enviando…</span>
+        </button>
+        <p class="text-white/70 text-xs mt-4">
+          Al enviar el formulario, aceptas y comprendes nuestra <a href="/privacidad" class="text-white underline hover:text-white/90 transition-colors">Política de Privacidad</a>.
+        </p>
+        <hr class="border-white/20 mt-6" aria-hidden="true" />
+      </form>
+      <div class="mt-6 flex flex-col gap-4" aria-live="polite">
+        <div id="contact-success" class="hidden rounded-[10px] border border-white/20 bg-white/10 p-4 text-white text-sm" role="status"></div>
+        <div id="contact-error" class="hidden rounded-[10px] border border-white/20 bg-white/10 p-4 text-sm text-red-300" role="alert"></div>
+      </div>
+    </div>
+    <script>
+      const trackEvent = (name: string, params?: Record<string, unknown>) => {
+        const g = (window as unknown as { gtag?: (a: string, b: string, c?: object) => void }).gtag;
+        if (g) g("event", name, params);
+      };
+      const form = document.getElementById("contact-form") as HTMLFormElement;
+      const container = document.getElementById("contact-form-container");
+      const successEl = document.getElementById("contact-success");
+      const errorEl = document.getElementById("contact-error");
+      const submitBtn = document.getElementById("contact-submit-btn") as HTMLButtonElement | null;
+      const btnText = submitBtn?.querySelector(".contact-btn-text");
+      const btnSpinner = submitBtn?.querySelector(".contact-btn-spinner");
+
+      function showSuccess(message: string) {
+        if (!successEl || !container) return;
+        form?.classList.add("hidden");
+        errorEl?.classList.add("hidden");
+        successEl.textContent = message;
+        successEl.classList.remove("hidden");
+        trackEvent("generate_lead", { method: "contact_form", form_name: "contacto" });
+      }
+
+      function showError(message: string) {
+        if (!errorEl) return;
+        errorEl.textContent = message;
+        errorEl.classList.remove("hidden");
+        trackEvent("form_error", { form_name: "contacto", error_message: message });
+      }
+
+      function setButtonLoading(loading: boolean) {
+        if (!submitBtn || !btnText || !btnSpinner) return;
+        if (loading) {
+          submitBtn.disabled = true;
+          btnText?.classList.add("hidden");
+          btnSpinner?.classList.remove("hidden");
+        } else {
+          submitBtn.disabled = false;
+          btnText?.classList.remove("hidden");
+          btnSpinner?.classList.add("hidden");
+        }
+      }
+
+      function clearFieldErrors() {
+        ["name", "email", "phone"].forEach((f) => {
+          const err = document.getElementById(`contact-${f}-error`);
+          if (err) {
+            err.classList.add("hidden");
+            err.textContent = "";
+          }
+        });
+      }
+
+      let formStartTracked = false;
+      form?.querySelectorAll("input")?.forEach((input) => {
+        input.addEventListener("focus", () => {
+          if (!formStartTracked) {
+            formStartTracked = true;
+            trackEvent("form_start", { form_name: "contacto" });
+          }
+        });
+      });
+
+      form?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        clearFieldErrors();
+        errorEl?.classList.add("hidden");
+        successEl?.classList.add("hidden");
+
+        const name = (form.querySelector("#contact-name") as HTMLInputElement)?.value?.trim();
+        const email = (form.querySelector("#contact-email") as HTMLInputElement)?.value?.trim();
+        const phone = (form.querySelector("#contact-phone") as HTMLInputElement)?.value?.trim();
+
+        let valid = true;
+        if (!name) {
+          const el = document.getElementById("contact-name-error");
+          if (el) {
+            el.textContent = "El nombre es obligatorio";
+            el.classList.remove("hidden");
+          }
+          valid = false;
+        }
+        if (!email) {
+          const el = document.getElementById("contact-email-error");
+          if (el) {
+            el.textContent = "El email es obligatorio";
+            el.classList.remove("hidden");
+          }
+          valid = false;
+        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          const el = document.getElementById("contact-email-error");
+          if (el) {
+            el.textContent = "Introduce un email válido";
+            el.classList.remove("hidden");
+          }
+          valid = false;
+        }
+        if (!phone) {
+          const el = document.getElementById("contact-phone-error");
+          if (el) {
+            el.textContent = "El teléfono es obligatorio";
+            el.classList.remove("hidden");
+          }
+          valid = false;
+        }
+
+        if (!valid) {
+          showError("Completa todos los campos correctamente.");
+          trackEvent("form_validation_error", { form_name: "contacto" });
+          return;
+        }
+
+        trackEvent("form_submit_attempt", { form_name: "contacto" });
+        setButtonLoading(true);
+
+        try {
+          const res = await fetch("/api/contact", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, email, phone }),
+          });
+          const data = await res.json().catch(() => ({}));
+
+          if (res.ok && data.success) {
+            showSuccess("¡Gracias! Nos pondremos en contacto contigo pronto.");
+          } else {
+            showError(data?.error ?? "Algo ha fallado. Inténtalo de nuevo.");
+          }
+        } catch {
+          showError("Error de conexión. Inténtalo de nuevo.");
+        } finally {
+          setButtonLoading(false);
+        }
+      });
+    </script>
+    <div class="grid md:grid-cols-3 gap-12 text-center max-w-5xl mx-auto text-white">
+      <div>
+        <h4 class="text-modern-sans text-2xl mb-2">Teléfono</h4>
+        <p class="text-xl mb-4 text-white/90">886291928</p>
+        <a class="inline-block border border-white px-8 py-2 text-xs uppercase tracking-widest hover:bg-white hover:text-academy-dark transition-all rounded-[10px]" href="https://wa.me/message/TNKYWLVDADUZJ1" target="_blank" rel="noopener noreferrer" data-cta="whatsapp">¿Dudas? Escríbenos por WhatsApp</a>
+      </div>
+      <div>
+        <h4 class="text-modern-sans text-2xl mb-2">Email</h4>
+        <p class="text-lg text-white/90">
+          <a href="mailto:nailsyaelrodriguez@gmail.com" class="hover:underline" data-cta="email_contact">nailsyaelrodriguez@gmail.com</a>
+        </p>
+      </div>
+      <div>
+        <h4 class="text-modern-sans text-2xl mb-2">Dirección</h4>
+        <p class="text-lg leading-relaxed text-white/90">
+          Conde Torreceideira 98 Bajo<br />
+          Vigo. Pontevedra<br />
+          (Galicia)
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

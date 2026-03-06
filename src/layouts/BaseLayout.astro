@@ -1,0 +1,150 @@
+---
+import "../styles/global.css";
+import Footer from "../components/Footer.astro";
+
+interface Props {
+  title: string;
+  description?: string;
+  canonical?: string;
+  ogImage?: string;
+}
+
+const { title, description = "Academia Yael Rodríguez – Formación integral en belleza: uñas, cejas, pestañas y estética. Academia de estética en Vigo. Formamos profesionales preparadas para ejercer y facturar." } = Astro.props;
+
+const siteUrl = Astro.site ? String(Astro.site) : "https://academia-yaelrodriguez.es";
+const canonicalUrl = Astro.props.canonical ? new URL(Astro.props.canonical, siteUrl).toString() : siteUrl + Astro.url.pathname;
+const ogImageUrl = Astro.props.ogImage ? new URL(Astro.props.ogImage, siteUrl).toString() : new URL("/favicon.svg", siteUrl).toString();
+
+const organizationSchema = {
+  "@context": "https://schema.org",
+  "@type": "EducationalOrganization",
+  name: "Academia Yael Rodríguez",
+  url: siteUrl,
+  description: "Formación integral en belleza: técnica, mentalidad y rentabilidad. Academia en Vigo especializada en uñas, cejas, pestañas y estética.",
+};
+
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "LocalBusiness",
+  name: "Academia Yael Rodríguez",
+  url: siteUrl,
+  image: "https://imagedelivery.net/F646Wun-eua00pA0NmkORQ/a776f436-1ac2-43f5-e108-9a785800bf00/public",
+  address: {
+    "@type": "PostalAddress",
+    streetAddress: "Conde Torreceideira 98 Bajo",
+    addressLocality: "Vigo",
+    addressRegion: "Pontevedra",
+    addressCountry: "ES",
+  },
+  telephone: "+34886291928",
+  email: "nailsyaelrodriguez@gmail.com",
+  aggregateRating: {
+    "@type": "AggregateRating",
+    ratingValue: "5",
+    reviewCount: "200",
+    bestRating: "5",
+  },
+};
+---
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="keywords" content="formación belleza, uñas, cejas, pestañas, estética, academia Vigo, Yael Rodríguez, nails, manicura, lifting pestañas, técnico cejas" />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <link rel="preconnect" href="https://imagedelivery.net" crossorigin />
+    <link rel="preload" href="https://imagedelivery.net/F646Wun-eua00pA0NmkORQ/a776f436-1ac2-43f5-e108-9a785800bf00/public" as="image" fetchpriority="high" />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@300;400;600;700&display=swap" /></noscript>
+
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:type" content="website" />
+    <meta property="og:locale" content="es_ES" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(organizationSchema)} />
+    <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
+
+    <!-- Google Tag Manager -->
+    <script is:inline>
+      (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+      new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+      j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+      'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+      })(window,document,'script','dataLayer','GTM-K5C49MF7');
+    </script>
+    <!-- End Google Tag Manager -->
+
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-D78Q5MS48T"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-D78Q5MS48T');
+    </script>
+    <!-- End Google tag (gtag.js) -->
+
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  </head>
+  <body class="text-modern-sans">
+    <!-- Google Tag Manager (noscript) -->
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-K5C49MF7" height="0" width="0" style="display:none;visibility:hidden"></iframe>
+    </noscript>
+    <!-- End Google Tag Manager (noscript) -->
+    <slot />
+    <Footer />
+    <script is:inline>
+      (function () {
+        function trackCtaClick(e) {
+          var el = e.target.closest("[data-cta]");
+          if (el && typeof gtag !== "undefined") {
+            gtag("event", "cta_click", {
+              cta_name: el.getAttribute("data-cta"),
+              cta_destination: el.getAttribute("href") || el.getAttribute("data-cta"),
+            });
+          }
+        }
+        function trackContactSectionView() {
+          var section = document.getElementById("contacto");
+          if (!section || typeof IntersectionObserver === "undefined") return;
+          var tracked = false;
+          var observer = new IntersectionObserver(
+            function (entries) {
+              if (tracked) return;
+              if (entries[0]?.isIntersecting && typeof gtag !== "undefined") {
+                tracked = true;
+                gtag("event", "contact_section_view", {});
+                observer.disconnect();
+              }
+            },
+            { threshold: 0.2, rootMargin: "0px" }
+          );
+          observer.observe(section);
+        }
+        document.addEventListener("click", trackCtaClick);
+        if (document.readyState === "loading") {
+          document.addEventListener("DOMContentLoaded", trackContactSectionView);
+        } else {
+          trackContactSectionView();
+        }
+      })();
+    </script>
+  </body>
+</html>

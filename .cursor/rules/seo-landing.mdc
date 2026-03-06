@@ -1,0 +1,39 @@
+---
+description: SEO checks for landing pages (meta, schema, alt text)
+globs: "**/*.astro"
+alwaysApply: false
+---
+
+# SEO for Landing Pages
+
+## Meta Tags (Every Page)
+
+- `<title>` – unique, descriptive, ~50–60 chars
+- `<meta name="description">` – ~155–160 chars, keywords
+- `<meta name="keywords">` – relevant terms ( formación belleza, uñas, cejas, estética, Vigo )
+- `<link rel="canonical">` – absolute URL
+- `lang="es"` on `<html>`
+
+## Open Graph
+
+- `og:title`, `og:description`, `og:image`, `og:url`, `og:type`, `og:locale`
+- Twitter: `twitter:card`, `twitter:title`, `twitter:description`, `twitter:image`
+
+## JSON-LD Schema
+
+- **Organization** – name, url, logo
+- **LocalBusiness** – address, telephone, email
+- **EducationalOrganization** – courses
+- **Review** – for testimonials (aggregate rating, individual)
+
+## Images
+
+- All images must have descriptive `alt` attribute
+- Placeholders: use `aria-label` or `role="img"` with descriptive text
+- When real images: add `width`, `height`, `loading="lazy"` for below-fold
+
+## Semantic HTML
+
+- Single `<h1>` per page (brand)
+- Logical h2/h3 hierarchy
+- `<header>`, `<main>`, `<section>`, `<footer>`

@@ -1,0 +1,72 @@
+# Cursor Rules – Academia Yael Rodríguez Landing
+
+This file provides context and guidelines for Cursor AI when working on the Academia Yael Rodríguez beauty academy landing page.
+
+## Project Overview
+
+Landing page for **Yael Rodríguez Beauty & Business Academy** – formación integral en belleza (uñas, cejas, pestañas, estética). Static, SEO-optimized, Spanish-language. Blog-ready via Astro Content Collections (not implemented yet).
+
+**Tech Stack:**
+- **Framework:** Astro (static, SSG)
+- **Styling:** TailwindCSS
+- **Content:** Spanish only (no i18n initially)
+- **DevOps:** Docker, docker-compose; production behind Traefik
+
+## Architecture Patterns
+
+### Astro
+- Use `.astro` components; prefer static rendering
+- Colocate components in `src/components/` by section
+- Layouts in `src/layouts/`
+- Pages in `src/pages/`
+- Content Collections in `src/content/` (blog-ready)
+
+### Tailwind
+- Design tokens: `academy-pink` (#e298b4), `academy-dark` (#1a1a1a)
+- Fonts: Playfair Display (serif), Montserrat (sans)
+- Utility-first; use responsive utilities (`md:`, `lg:`)
+
+## Design System
+
+- **Colors:** academy-pink, academy-dark, white
+- **Typography:** Playfair Display for headings, Montserrat for body
+- **Components:** btn-outline (white border, hover fill), floral-bg (dark overlay), card-dark-translucent
+- **Images:** Use `ImagePlaceholder.astro` for placeholders until real images provided
+
+## SEO & Accessibility
+
+- Semantic HTML: `header`, `main`, `section`, `footer`, correct h1–h6 hierarchy
+- Single `<h1>` per page (brand name)
+- Meta tags: title, description, Open Graph, Twitter cards
+- JSON-LD: Organization, LocalBusiness, EducationalOrganization, Review
+- Alt text for all images (including placeholders via aria-label)
+- `lang="es"` on `<html>`
+- Sitemap, robots.txt
+
+## File Locations
+
+| Area | Path |
+|------|------|
+| Components | `src/components/` |
+| Layouts | `src/layouts/` |
+| Pages | `src/pages/` |
+| Content | `src/content/` (blog collection) |
+| Styles | `src/styles/` |
+| Public assets | `public/` |
+| AI context | `ai/context/` |
+
+## Important Rules
+
+1. Use **Astro** for all components; TypeScript where applicable
+2. Use **Tailwind** with design tokens (academy-pink, academy-dark)
+3. **Image placeholders** – colored boxes with descriptive aria-label until real images
+4. **SEO** – meta, schema, semantic HTML, alt text
+5. **Spanish** – all copy in Spanish
+6. After notable changes, update `ai/context/RECENT_CHANGES.md`
+
+## Reference Files
+
+- Project structure: `ai/context/PROJECT_STRUCTURE.md`
+- Tech stack: `ai/context/TECH_STACK.md`
+- Common patterns: `ai/context/COMMON_PATTERNS.md`
+- Coding standards: `ai/context/CODING_STANDARDS.md`

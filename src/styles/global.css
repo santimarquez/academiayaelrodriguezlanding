@@ -1,0 +1,58 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-academy-pink text-academy-dark overflow-x-hidden text-modern-sans;
+  }
+
+  a {
+    border-radius: 10px;
+  }
+
+  a:focus-visible {
+    @apply outline-none ring-2 ring-academy-pink ring-offset-2;
+  }
+}
+
+@layer components {
+  .text-elegant-serif {
+    font-family: "Playfair Display", serif;
+  }
+
+  .text-modern-sans {
+    font-family: Montserrat, sans-serif;
+  }
+
+  .btn-outline {
+    @apply border border-white px-8 py-3 uppercase font-semibold text-sm tracking-widest transition-all duration-300 rounded-[10px];
+  }
+
+  .btn-outline:hover {
+    @apply bg-white text-academy-pink;
+  }
+
+  .btn-outline:focus-visible {
+    @apply outline-none ring-2 ring-white ring-offset-2 ring-offset-academy-pink;
+  }
+
+  .skip-link {
+    @apply absolute -translate-y-full left-4 top-4 z-[100] rounded bg-white px-4 py-2 text-academy-dark font-semibold transition-transform focus-visible:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-academy-pink focus-visible:ring-offset-2;
+  }
+
+  .floral-bg {
+    @apply bg-academy-dark;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7));
+    background-size: cover;
+    background-position: center;
+  }
+
+  .card-dark-translucent {
+    @apply bg-black/30 border border-white/20 backdrop-blur-sm;
+  }
+}
