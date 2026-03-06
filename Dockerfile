@@ -1,15 +1,31 @@
 # Build stage
-FROM node:lts-alpine AS build
+FROM node:20-alpine AS builder
+
 WORKDIR /app
+
+ARG SITE_URL=https://academiayaelrodriguez.com
+ENV SITE_URL=${SITE_URL}
+
 COPY package.json package-lock.json* ./
 RUN npm ci
+
 COPY . .
-ENV ASTRO_TELEMETRY_DISABLED=1
 RUN npm run build
 
-# Runtime stage (nginx for static files)
-FROM nginx:alpine AS runtime
-COPY --from=build /app/dist /usr/share/nginx/html
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+# Run stage
+FROM node:20-alpine AS runner
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV HOST=0.0.0.0
+ENV PORT=80
+
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/package.json package-lock.json* ./
+COPY --from=builder /app/node_modules ./node_modules
+RUN npm prune --omit=dev
+
 EXPOSE 80
-CMD ["nginx", "-g", "daemon off;"]
+
+CMD ["node", "./dist/server/entry.mjs"]

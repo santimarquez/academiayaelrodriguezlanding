@@ -1,10 +1,43 @@
+# Academia Yael Rodríguez - Astro landing + contact form
+# Behind Traefik (VPS): set SITE_URL=https://academiayaelrodriguez.com in .env,
+# ensure inverseproxy_shared network exists (created by Traefik stack),
+# and configure SMTP (MAIL_*) for the contact form.
+#
+# Run: docker compose up -d
+
 services:
-  landing:
-    container_name: academia-yael-rodriguez-landing
-    build: .
+  web:
+    build:
+      context: .
+      args:
+        SITE_URL: ${SITE_URL:-https://academiayaelrodriguez.com}
+    image: academiayaelrodriguez-landing
+    restart: unless-stopped
     ports:
-      - "8080:80"
-    env_file:
-      - .env
+      - "${PORT:-8080}:80"
     networks:
       - default
+      - inverseproxy_shared
+    environment:
+      SITE_URL: ${SITE_URL:-https://academiayaelrodriguez.com}
+      CONTACT_EMAIL: ${CONTACT_EMAIL}
+      MAIL_HOST: ${MAIL_HOST}
+      MAIL_PORT: ${MAIL_PORT}
+      MAIL_USERNAME: ${MAIL_USERNAME}
+      MAIL_PASSWORD: ${MAIL_PASSWORD}
+      MAIL_ENCRYPTION: ${MAIL_ENCRYPTION:-}
+      MAIL_FROM_ADDRESS: ${MAIL_FROM_ADDRESS}
+      MAIL_FROM_NAME: ${MAIL_FROM_NAME:-Academia Yael Rodríguez}
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=inverseproxy_shared"
+      - "traefik.http.services.academiayaelrodriguez.loadbalancer.server.port=80"
+      - "traefik.http.routers.academiayaelrodriguez-https.rule=Host(`academiayaelrodriguez.com`) || Host(`www.academiayaelrodriguez.com`)"
+      - "traefik.http.routers.academiayaelrodriguez-https.entrypoints=websecure"
+      - "traefik.http.routers.academiayaelrodriguez-https.tls=true"
+      - "traefik.http.routers.academiayaelrodriguez-https.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.academiayaelrodriguez-https.service=academiayaelrodriguez"
+
+networks:
+  inverseproxy_shared:
+    external: true

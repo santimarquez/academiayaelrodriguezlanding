@@ -1,0 +1,12 @@
+# Production override: use with Traefik.
+# Run: docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+#
+# Required: .env with SITE_URL, CONTACT_EMAIL, MAIL_* vars.
+# Ensure inverseproxy_shared network exists (created by Traefik stack).
+
+services:
+  web:
+    ports: []  # no host port; Traefik routes by Host
+    build:
+      args:
+        SITE_URL: ${SITE_URL:-https://academiayaelrodriguez.com}
