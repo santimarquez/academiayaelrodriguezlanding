@@ -49,18 +49,30 @@
           />
           <span id="contact-phone-error" class="mt-1 hidden text-sm text-red-300" aria-live="polite"></span>
         </div>
+        <div class="space-y-3 pt-1">
+          <div class="flex gap-3 items-start">
+            <input
+              type="checkbox"
+              id="contact-privacy"
+              name="privacy"
+              class="mt-1 h-4 w-4 shrink-0 rounded border-white/40 bg-white/10 accent-academy-pink focus:ring-white/40 focus:ring-offset-0 focus:ring-offset-academy-dark"
+            />
+            <label for="contact-privacy" class="text-white/90 text-xs leading-relaxed text-left cursor-pointer">
+              He leído y acepto la <a href="/privacidad" class="text-white underline hover:text-white/90">Política de Privacidad</a> <span class="text-red-300">*</span>
+            </label>
+          </div>
+          <span id="contact-privacy-error" class="hidden text-sm text-red-300" aria-live="polite"></span>
+        </div>
+        <hr class="border-white/20" aria-hidden="true" />
         <button
           type="submit"
           id="contact-submit-btn"
-          class="btn-outline border-white text-white text-xs w-full sm:w-auto hover:bg-white hover:text-academy-dark"
+          disabled
+          class="btn-outline border-white text-white text-xs w-full sm:w-auto hover:bg-white hover:text-academy-dark disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:bg-transparent disabled:hover:text-white"
         >
           <span class="contact-btn-text">Solicitar información</span>
           <span class="contact-btn-spinner hidden" aria-hidden="true">Enviando…</span>
         </button>
-        <p class="text-white/70 text-xs mt-4">
-          Al enviar el formulario, aceptas y comprendes nuestra <a href="/privacidad" class="text-white underline hover:text-white/90 transition-colors">Política de Privacidad</a>.
-        </p>
-        <hr class="border-white/20 mt-6" aria-hidden="true" />
       </form>
       <div class="mt-6 flex flex-col gap-4" aria-live="polite">
         <div id="contact-success" class="hidden rounded-[10px] border border-white/20 bg-white/10 p-4 text-white text-sm" role="status"></div>
@@ -79,6 +91,27 @@
       const submitBtn = document.getElementById("contact-submit-btn") as HTMLButtonElement | null;
       const btnText = submitBtn?.querySelector(".contact-btn-text");
       const btnSpinner = submitBtn?.querySelector(".contact-btn-spinner");
+      const privacyCheckbox = document.getElementById("contact-privacy") as HTMLInputElement | null;
+      const nameInput = document.getElementById("contact-name") as HTMLInputElement | null;
+      const emailInput = document.getElementById("contact-email") as HTMLInputElement | null;
+      const phoneInput = document.getElementById("contact-phone") as HTMLInputElement | null;
+
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+      function isFormReady(): boolean {
+        const name = nameInput?.value?.trim() ?? "";
+        const email = emailInput?.value?.trim() ?? "";
+        const phone = phoneInput?.value?.trim() ?? "";
+        const privacy = privacyCheckbox?.checked ?? false;
+        return Boolean(name && email && emailRegex.test(email) && phone && privacy);
+      }
+
+      function updateSubmitEnabled() {
+        if (!submitBtn) return;
+        const loading = btnSpinner && !btnSpinner.classList.contains("hidden");
+        if (loading) return;
+        submitBtn.disabled = !isFormReady();
+      }
 
       function showSuccess(message: string) {
         if (!successEl || !container) return;
@@ -103,9 +136,9 @@
           btnText?.classList.add("hidden");
           btnSpinner?.classList.remove("hidden");
         } else {
-          submitBtn.disabled = false;
           btnText?.classList.remove("hidden");
           btnSpinner?.classList.add("hidden");
+          updateSubmitEnabled();
         }
       }
 
@@ -127,11 +160,15 @@
             trackEvent("form_start", { form_name: "contacto" });
           }
         });
+        input.addEventListener("input", updateSubmitEnabled);
+        input.addEventListener("change", updateSubmitEnabled);
       });
+      updateSubmitEnabled();
 
       form?.addEventListener("submit", async (e) => {
         e.preventDefault();
         clearFieldErrors();
+        document.getElementById("contact-privacy-error")?.classList.add("hidden");
         errorEl?.classList.add("hidden");
         successEl?.classList.add("hidden");
 
@@ -171,9 +208,23 @@
           }
           valid = false;
         }
+        const privacyErr = document.getElementById("contact-privacy-error");
+        privacyErr?.classList.add("hidden");
+        privacyErr && (privacyErr.textContent = "");
+        if (!privacyCheckbox?.checked) {
+          valid = false;
+          if (privacyErr) {
+            privacyErr.textContent = "Debes aceptar la Política de Privacidad para continuar.";
+            privacyErr.classList.remove("hidden");
+          }
+        }
 
         if (!valid) {
-          showError("Completa todos los campos correctamente.");
+          showError(
+            privacyCheckbox?.checked
+              ? "Completa todos los campos correctamente."
+              : "Revisa el formulario y acepta la Política de Privacidad."
+          );
           trackEvent("form_validation_error", { form_name: "contacto" });
           return;
         }
@@ -204,7 +255,9 @@
     <div class="grid md:grid-cols-3 gap-12 text-center max-w-5xl mx-auto text-white">
       <div>
         <h4 class="text-modern-sans text-2xl mb-2">Teléfono</h4>
-        <p class="text-xl mb-4 text-white/90">886291928</p>
+        <p class="text-xl mb-4 text-white/90">
+          <a href="tel:+34886291928" class="hover:text-white hover:underline transition-colors" data-cta="phone_call">886 291 928</a>
+        </p>
         <a class="inline-block border border-white px-8 py-2 text-xs uppercase tracking-widest hover:bg-white hover:text-academy-dark transition-all rounded-[10px]" href="https://wa.me/message/TNKYWLVDADUZJ1" target="_blank" rel="noopener noreferrer" data-cta="whatsapp">¿Dudas? Escríbenos por WhatsApp</a>
       </div>
       <div>
